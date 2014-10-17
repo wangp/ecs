@@ -1,0 +1,9 @@
+MAIN_TARGET = main
+
+MCFLAGS += --optimise-constructor-last-call
+
+MCFLAGS += "`pkg-config --cflags sdl2`"
+MCFLAGS-main += --ld-flags "`pkg-config --libs sdl2`"
+MLLIBS-main += -lSDL2_gfx
+
+-include Mercury.params
