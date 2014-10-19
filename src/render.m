@@ -77,11 +77,11 @@ render(Screen, Time, World, Ecs, !IO) :-
 render_entity(Screen, Bounds, Time, Ecs, Entity, Vis, !IO) :-
     (
         get(Ecs, Entity, Loc),
-        Vis = vis(Sprite, BaseScale, ScaleAnim, MaybeBlink),
+        Vis = vis(Sprite, ScaleAnim, MaybeBlink),
         visible(Time, MaybeBlink, yes)
     ->
         Loc = loc(Pos, _Vel, Angle, _AngleVel, Wrap),
-        animate(ScaleAnim, Time, BaseScale, Scale),
+        animate(ScaleAnim, Time, Scale),
         (
             Wrap = yes,
             draw_wrap(Screen, Bounds, Sprite, Pos, Angle, Scale, !IO)
@@ -100,14 +100,14 @@ visible(Time, yes(blink(Start, Rate)), Visible) :-
     Period = floor_to_int((Time - Start) / Rate),
     Visible = pred_to_bool(even(Period)).
 
-:- pred animate(anim::in, game_time::in, float::in, float::out) is det.
+:- pred animate(anim::in, game_time::in, float::out) is det.
 
-animate(none, _T, V, V).
-animate(anim(cubic_ease_out, T0, T1, K0, K1), T, V0, V) :-
+animate(constant(V), _T, V).
+animate(anim(cubic_ease_out, T0, T1, V0, V1), T, V) :-
     P = min(1.0, (T-T0)/(T1-T0)),
     F = P - 1.0,
     K = F*F*F + 1.0,
-    V = K*K1*V0 + (1.0-K)*K0*V0.
+    V = K*V1 + (1.0-K)*V0.
 
 :- pred draw_wrap(screen::in, bounds::in, sprite::in, vec2::in, float::in,
     float::in, io::di, io::uo) is det.

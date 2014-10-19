@@ -62,7 +62,7 @@ new_asteroid(Pos, Life, !Ecs, !RS) :-
         new_entity(Entity, !Ecs),
         set(Entity, Loc, !Ecs),
         set(Entity, collider(asteroid_tag, circle(Scale), enabled), !Ecs),
-        set(Entity, fg, vis(asteroid_sprite, Scale, none, no), !Ecs),
+        set(Entity, fg, vis(asteroid_sprite, constant(Scale), no), !Ecs),
         set_life(Entity, Life, !Ecs)
     ;
         true % unexpected
@@ -91,7 +91,7 @@ new_ship(Time, Player, Angle, Invuln, !Ecs) :-
     ),
     Scale = 1.0,
     set(Ship, collider(ship_tag, circle(Scale), CanCollide), !Ecs),
-    set(Ship, fg, vis(ship_sprite, Scale, none, MaybeBlink), !Ecs).
+    set(Ship, fg, vis(ship_sprite, constant(Scale), MaybeBlink), !Ecs).
 
 new_bullet(Time, Pos, BaseVel, Angle, Player, !Ecs, !RS) :-
     new_entity(Entity, !Ecs),
@@ -100,7 +100,7 @@ new_bullet(Time, Pos, BaseVel, Angle, Player, !Ecs, !RS) :-
     set(Entity, loc(Pos, Vel, Angle, 0.0, yes), !Ecs),
     Scale = 0.2,
     set(Entity, collider(bullet_tag, circle(Scale), enabled), !Ecs),
-    set(Entity, fg, vis(bullet_sprite, Scale, none, no), !Ecs),
+    set(Entity, fg, vis(bullet_sprite, constant(Scale), no), !Ecs),
     set_timeout(Entity, Time + 1.0, kill_bullet(Entity), !Ecs).
 
 new_ufo(Time, Pos, Owner, !Ecs) :-
@@ -110,7 +110,7 @@ new_ufo(Time, Pos, Owner, !Ecs) :-
     set(Entity, loc(Pos, vec2(-0.15, 0.0), 0.0, 0.0, no), !Ecs),
     Scale = 1.0,
     set(Entity, collider(enemy_tag, circle(Scale), enabled), !Ecs),
-    set(Entity, fg, vis(ufo_sprite, Scale, none, no), !Ecs),
+    set(Entity, fg, vis(ufo_sprite, constant(Scale), no), !Ecs),
     set_owner(Entity, Owner, !Ecs).
 
 new_enemy_bullet(Time, Pos, Vel, Angle, !Ecs) :-
@@ -118,21 +118,21 @@ new_enemy_bullet(Time, Pos, Vel, Angle, !Ecs) :-
     set(Entity, loc(Pos, Vel, Angle, 0.0, yes), !Ecs),
     Scale = 0.2,
     set(Entity, collider(enemy_bullet_tag, circle(Scale), enabled), !Ecs),
-    set(Entity, fg, vis(enemy_bullet_sprite, Scale, none, no), !Ecs),
+    set(Entity, fg, vis(enemy_bullet_sprite, constant(Scale), no), !Ecs),
     set_timeout(Entity, Time + 3.0, kill_enemy_bullet(Entity), !Ecs).
 
 new_explosion(Time, Pos, !Ecs) :-
     new_entity(Entity, !Ecs),
     set(Entity, loc(Pos, zero, 0.0, 0.0, no), !Ecs),
     EndTime = Time + 0.25,
-    Anim = anim(cubic_ease_out, Time, EndTime, 0.0, 1.0),
-    set(Entity, fg/*overlay*/, vis(explosion_sprite, 1.0, Anim, no), !Ecs),
+    Scale = anim(cubic_ease_out, Time, EndTime, 0.0, 1.0),
+    set(Entity, fg/*overlay*/, vis(explosion_sprite, Scale, no), !Ecs),
     set_timeout(Entity, EndTime, kill_explosion(Entity), !Ecs).
 
 new_star(Pos, Vel, !Ecs) :-
     new_entity(Entity, !Ecs),
     set(Entity, loc(Pos, Vel, 0.0, 0.0, yes), !Ecs),
-    set(Entity, bg, vis(star_sprite, 0.05, none, no), !Ecs).
+    set(Entity, bg, vis(star_sprite, constant(0.05), no), !Ecs).
 
 %-----------------------------------------------------------------------------%
 % vim: ft=mercury ts=4 sts=4 sw=4 et

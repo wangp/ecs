@@ -21,10 +21,9 @@
 
 :- type vis
     --->    vis(
-                sprite      :: sprite,
-                scale       :: float,
-                scale_anim  :: anim,
-                blink       :: maybe(blink)
+                sprite  :: sprite,
+                scale   :: anim,
+                blink   :: maybe(blink)
             ).
 
 :- type sprite
@@ -37,13 +36,13 @@
     ;       star_sprite.
 
 :- type anim
-    --->    none
+    --->    constant(float)
     ;       anim(
                 fn      :: easing_function,
                 t0      :: game_time,
                 t1      :: game_time,
-                k0      :: float,
-                k1      :: float
+                v0      :: float,
+                v1      :: float
             ).
 
 :- type easing_function
