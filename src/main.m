@@ -123,17 +123,13 @@ step(Screen, Time, !World, !Ecs, !Events, !RS, !IO) :-
         true
     ;
         run_controls(Time, !Ecs, !Events),
-        run_ais(Time, !.World, !Ecs, !Events)
+        run_ais(Time, !.World, !Ecs, !Events),
+        run_timers(Time, !Ecs, !Events),
+        run_collisions(Time, !.Ecs, !Events),
+        run_events(!World, !Ecs, !Events, !RS),
+        run_physics(!.World, !Ecs),
+        sweep_dead(!Ecs)
     ),
-    run_timers(Time, !Ecs, !Events),
-    run_collisions(Time, !.Ecs, !Events),
-    run_events(!World, !Ecs, !Events, !RS),
-    ( is_paused(!.World) ->
-        true
-    ;
-        run_physics(!.World, !Ecs)
-    ),
-    sweep_dead(!Ecs),
     render(Screen, Time, !.World, !.Ecs, !IO).
 
 %-----------------------------------------------------------------------------%
